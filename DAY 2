@@ -1,0 +1,152 @@
+Q1: Count how many students passed the exam.
+select
+count(total_score)
+from day_1_exam
+WHERE result_status='Pass'
+| count |
+| ----- |
+| 36    |
+
+
+Q2: Find the average score of all students who failed.
+select
+AVG(total_score)
+from day_1_exam
+WHERE result_status='Fail'
+| avg                 |
+| ------------------- |
+| 26.4375000000000000 |
+
+
+
+Q3: Get the highest score among all students.
+Select
+max(total_score) as Highest_score
+from day_1_exam
+| highest_score |
+| ------------- |
+| 46            |
+
+
+
+Q5: Sum the total marks of all students who scored above 40.
+Select
+sum(total_score) as total_marks_above_40
+from day_1_exam
+where total_score>40
+| total_marks_above_40 |
+| -------------------- |
+| 347                  |
+
+Q6: Count students by result status for those who scored 35 or more.
+Select
+count (result_status)
+from day_1_exam
+where total_score>=35
+group by result_status
+| count |
+| ----- |
+| 24    |
+
+
+Q7: Find average score grouped by result status for students with scores between 30 and 40.
+Select
+result_status,
+avg(total_score)
+from day_1_exam
+where total_score between 30 and 40
+group by result_status
+| result_status | avg                 |
+| ------------- | ------------------- |
+| Pass          | 34.8214285714285714 |
+
+
+
+Q8: Get maximum and minimum scores grouped by result status for students who scored less than 35.
+Select
+max(total_score) as highest_score,
+min(total_score) as lowest_score
+FROM day_1_exam
+WHERE total_score< 35
+group by result_status
+| highest_score | lowest_score |
+| ------------- | ------------ |
+| 34            | 30           |
+| 29            | 21           |
+
+
+
+Q9: Count students grouped by result status for those whose names start with 'A'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Q10: Sum total scores grouped by result status for students who scored exactly 35, 40, or 45.
+select
+result_status,
+SUM(total_score)
+from
+day_1_exam
+WHERE total_score IN (35,40,45)
+GROUP BY result_status
+| result_status | sum |
+| ------------- | --- |
+| Pass          | 255 |
+
+
+
+Q11: Count students by each score value, ordered by score descending.
+SELECT
+total_score,
+count (student_name) AS STUDENT_COUNT
+FROM day_1_exam
+GROUP BY total_score
+ORDER BY total_score desc
+| total_score | student_count |
+| ----------- | ------------- |
+| 46          | 2             |
+| 44          | 1             |
+| 43          | 3             |
+| 41          | 2             |
+| 40          | 2             |
+| 39          | 2             |
+| 38          | 1             |
+| 37          | 2             |
+| 36          | 4             |
+| 35          | 5             |
+| 34          | 4             |
+| 32          | 4             |
+| 31          | 2             |
+| 30          | 2             |
+| 29          | 4             |
+| 28          | 2             |
+| 27          | 4             |
+| 26          | 2             |
+| 25          | 1             |
+| 24          | 1             |
+| 21          | 2             |
+
+
+Q12: Show average score for each result status, ordered by average score.
+
+
+
+
+
+
+
+
+
+
+
+    
+
