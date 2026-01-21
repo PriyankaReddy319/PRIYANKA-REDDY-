@@ -1,0 +1,405 @@
+Q1)Find the Average, Maximum, and Minimum marks obtained in the Day 1 Exam to see how the class performed as a whole.
+SELECT
+AVG(total_score) AS Average_marks,
+MAX(total_score)AS highest_marks,
+MIN(total_score) AS lowest_marks
+FROM day_1_exam
+
+| average_marks       | highest_marks | minimum_marks |
+| ------------------- | ------------- | ------------- |
+| 33.5576923076923077 | 46            | 21            |
+
+Q2)List the names of MBA students who scored above 35 on Day 2.
+SELECT
+T1.full_name,
+T2.total_score
+FROM
+"RSVP_New" AS T1
+JOIN day_2_exam AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+WHERE T2.total_score > 35
+| full_name            | total_score |
+| -------------------- | ----------- |
+| MALEKA TARRANUM      | 36          |
+| HALEEMA MARFANI      | 42          |
+| SWAIBA FAZAL         | 36          |
+| SRUTHI LALITHA       | 39          |
+| BARRAH SHAKEEB       | 38          |
+| ANISHA               | 40          |
+| RITHIKA              | 36          |
+| ZILL E SUMAIYA BEGUM | 38          |
+| NAINA DUGAR          | 44          |
+| PRIYANKA  REDDDY     | 36          |
+| FATIMA AMOODI        | 36          |
+| TASNIA ZAREEF        | 41          |
+| HAFSA                | 37          |
+
+
+Q3)Identify students whose Day 2 score was strictly higher than their Day 1 score.
+SELECT
+    T1.full_name,
+    T2.total_score AS DAY1,
+    T3.total_score AS DAY2
+FROM
+    "RSVP_New" AS T1
+JOIN day_1_exam AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+JOIN day_2_exam AS T3
+ON T1.hall_ticket_no = T3.hall_ticket_no
+WHERE T3.total_score > T2.total_score; 
+| full_name       | day1 | day2 |
+| --------------- | ---- | ---- |
+| MALEKA TARRANUM | 32   | 36   |
+| RITHIKA         | 34   | 36   |
+| NAINA DUGAR     | 41   | 44   |
+| MARIA KATE      | 27   | 30   |
+| MAHIMA          | 32   | 34   |
+| RAMDIN ASWANI   | 27   | 35   |
+| SUMAYYA FATHIMA | 31   | 33   |
+| PAVITHRA        | 25   | 28   |
+
+Q4)Do passing students work faster? Join day_2_exam with qaday2 to find the average 'Total Time' for students who 'Pass' vs those who 'Fail'.
+SELECT
+    result_status,
+    AVG(T2."Total Time") -- Adjusted to T2 for clarity on source
+FROM
+    day_2_exam AS T1
+JOIN qaday2 AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+GROUP BY 1; -- Correctly groups by status for average time [4, 9].
+| result_status | avg              |
+| ------------- | ---------------- |
+| Fail          | 1214.90944444444 |
+| Pass          | 1125.09333333333 |
+
+
+Q5)Do passing students work faster? Join day_2_exam with qaday2 to find the average 'Total Time' for students who 'Pass' vs those who 'Fail'.
+SELECT
+result_status,
+AVG("Total Time")
+FROM
+day_2_exam AS T1
+JOIN qaday2 AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+GROUP BY 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Q6)For each department, show the total number of registrations, total students who took Day 1, and total students who took Day 2.
+SELECT
+T1.department_name,
+COUNT (T1.*) AS REGISTRATION,
+COUNT (T2.*) AS ATTENDED_DAY1,
+COUNT (T3.*) AS ATTENDED_DAY2
+FROM
+"RSVP_New" AS T1
+LEFT JOIN day_1_exam AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+LEFT JOIN day_2_exam AS T3
+ON T1.hall_ticket_no = T3.hall_ticket_no
+GROUP BY 1
+ORDER BY department_name
+| department_name                         | registration | attended_day1 | attended_day2 |
+| --------------------------------------- | ------------ | ------------- | ------------- |
+| Master of Business Administration (MBA) | 53           | 52            | 42            |
+| Mechanical Engineering (ME)             | 2            | 0             | 0             |
+
+
+Q7)Using the dob (Date of Birth) in RSVP_New, identify students born before the year 2000 as 'Senior Students' and those born in 2000 or later as 'Junior Students'.
+SELECT
+full_name,
+dob,
+CASE
+WHEN (dob) < DATE '2000-01-01' THEN 'SENIOR STUDENT'
+ELSE 'JUNIOR STUDENT'
+END AS AGE_GROUP
+FROM
+"RSVP_New"
+| full_name            | dob        | age_group      |
+| -------------------- | ---------- | -------------- |
+| KONDRU               | 1992-09-10 | SENIOR STUDENT |
+| KONDRU               | 1992-09-10 | SENIOR STUDENT |
+| MASEERA PATHAN       | 2002-11-22 | JUNIOR STUDENT |
+| SOBIA                | 2003-02-15 | JUNIOR STUDENT |
+| AMENAH AHSAN         | 2004-01-11 | JUNIOR STUDENT |
+| MALEKA TARRANUM      | 2003-12-01 | JUNIOR STUDENT |
+| PRAGNA               | 2002-10-18 | JUNIOR STUDENT |
+| HALEEMA MARFANI      | 2003-06-20 | JUNIOR STUDENT |
+| SARA BEGUM           | 2003-12-27 | JUNIOR STUDENT |
+| SWAIBA FAZAL         | 2002-08-01 | JUNIOR STUDENT |
+| AMRITHA              | 2003-04-16 | JUNIOR STUDENT |
+| NITYA SREE           | 2003-03-04 | JUNIOR STUDENT |
+| NABA MUJAHID         | 2003-09-08 | JUNIOR STUDENT |
+| MUSFIRA OMER         | 2003-10-28 | JUNIOR STUDENT |
+| SRUTHI LALITHA       | 1999-11-12 | SENIOR STUDENT |
+| KARUNA MANORAMA      | 2004-08-21 | JUNIOR STUDENT |
+| AISHWARYA            | 2004-05-10 | JUNIOR STUDENT |
+| ZUBIYA NAAZ          | 2003-10-01 | JUNIOR STUDENT |
+| BARRAH SHAKEEB       | 2003-04-11 | JUNIOR STUDENT |
+| ANISHA               | 2004-03-26 | JUNIOR STUDENT |
+| NANDINI              | 2002-08-26 | JUNIOR STUDENT |
+| SHAZIYA TASLEEM      | 2004-02-19 | JUNIOR STUDENT |
+| SABA MOHAMMED ZIA    | 2003-11-17 | JUNIOR STUDENT |
+| RITHIKA              | 2002-03-11 | JUNIOR STUDENT |
+| AKANKSHA             | 2004-08-03 | JUNIOR STUDENT |
+| MUNAZZA KHATOON      | 2004-04-05 | JUNIOR STUDENT |
+| JUVERIYA JAHA        | 2003-03-20 | JUNIOR STUDENT |
+| ADEEBA ARFANI        | 2003-08-26 | JUNIOR STUDENT |
+| ZILL E SUMAIYA BEGUM | 2003-12-10 | JUNIOR STUDENT |
+| EVELYNSHINY          | 2003-11-20 | JUNIOR STUDENT |
+| NAINA DUGAR          | 2003-12-21 | JUNIOR STUDENT |
+| SUMAIYA FATIMA       | 2004-03-10 | JUNIOR STUDENT |
+| AISHA SULTANA        | 2004-02-07 | JUNIOR STUDENT |
+| MARIA KATE           | 2003-08-27 | JUNIOR STUDENT |
+| PRIYANKA  REDDDY     | 2003-10-31 | JUNIOR STUDENT |
+| PRIYANKA             | 2003-07-28 | JUNIOR STUDENT |
+| SHIFA                | 1999-03-17 | SENIOR STUDENT |
+| MAHIMA               | 2003-04-14 | JUNIOR STUDENT |
+| FATIMA AMOODI        | 2003-03-10 | JUNIOR STUDENT |
+| VAISHALI             | 2003-07-28 | JUNIOR STUDENT |
+| SAYEDA SANIYA        | 2003-10-01 | JUNIOR STUDENT |
+| TASNIA ZAREEF        | 2003-09-22 | JUNIOR STUDENT |
+| RAMDIN ASWANI        | 2002-11-14 | JUNIOR STUDENT |
+| HAFSA                | 2003-05-10 | JUNIOR STUDENT |
+| RAHMATH  UNNISA      | 2003-10-22 | JUNIOR STUDENT |
+| SHIVA KUMARI         | 2003-09-24 | JUNIOR STUDENT |
+| SUMAYYA FATHIMA      | 2004-02-12 | JUNIOR STUDENT |
+| HAFSA HANA           | 2003-01-01 | JUNIOR STUDENT |
+| ASRA OSMAN           | 2002-09-18 | JUNIOR STUDENT |
+| AYESHA JABEEN        | 2004-05-10 | JUNIOR STUDENT |
+| PAVITHRA             | 2003-03-15 | JUNIOR STUDENT |
+| SUBIYA KAUSER        | 2003-09-10 | JUNIOR STUDENT |
+| RAHELA SULTANA       | 2002-04-16 | JUNIOR STUDENT |
+| LAYEBA SIDDIQUE      | 2002-05-23 | JUNIOR STUDENT |
+| SHIFA                | 1999-03-17 | SENIOR STUDENT |
+
+
+Q8)Join day_2_exam with qaday2. Create a logic: If 'Total Time' is less than 1000 and 'Result' is 'Pass', label them as 'High Efficiency'. If they passed but took longer, label them as 'Hard Worker'.
+SELECT
+T1.hall_ticket_no,
+result_status,
+"Total Time",
+CASE
+WHEN "Total Time" < 1000 AND result_status = 'Pass' THEN 'HIGH EFFICIENCY'
+WHEN "Total Time" > 1000 AND result_status = 'Pass' THEN 'HARD WORKER'
+ELSE 'NEEDS SUPPORT'
+END AS EFFICIEMCY_RANK
+FROM
+day_2_exam AS T1
+JOIN qaday2 AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+| hall_ticket_no | result_status | Total Time | efficiemcy_rank |
+| -------------- | ------------- | ---------- | --------------- |
+| 120424672001   | Pass          | 1247.53    | HARD WORKER     |
+| 120424672002   | Pass          | 1345.35    | HARD WORKER     |
+| 120424672003   | Pass          | 1238.26    | HARD WORKER     |
+| 120424672005   | Pass          | 1236.55    | HARD WORKER     |
+| 120424672007   | Pass          | 1122.53    | HARD WORKER     |
+| 120424672008   | Fail          | 1437.73    | NEEDS SUPPORT   |
+| 120424672009   | Fail          | 1259.3     | NEEDS SUPPORT   |
+| 120424672010   | Pass          | 1212.27    | HARD WORKER     |
+| 120424672011   | Pass          | 1102.11    | HARD WORKER     |
+| 120424672012   | Pass          | 1168.41    | HARD WORKER     |
+| 120424672013   | Fail          | 1029.41    | NEEDS SUPPORT   |
+| 120424672014   | Pass          | 1367.55    | HARD WORKER     |
+| 120424672015   | Fail          | 1098.4     | NEEDS SUPPORT   |
+| 120424672016   | Pass          | 821.25     | HIGH EFFICIENCY |
+| 120424672017   | Pass          | 817.72     | HIGH EFFICIENCY |
+| 120424672018   | Pass          | 1432.16    | HARD WORKER     |
+| 120424672022   | Fail          | 803.96     | NEEDS SUPPORT   |
+| 120424672024   | Pass          | 879.91     | HIGH EFFICIENCY |
+| 120424672025   | Fail          | 1172.98    | NEEDS SUPPORT   |
+| 120424672026   | Fail          | 1004.38    | NEEDS SUPPORT   |
+| 120424672027   | Fail          | 1378.31    | NEEDS SUPPORT   |
+| 120424672029   | Pass          | 1313.07    | HARD WORKER     |
+| 120424672030   | Fail          | 1420.44    | NEEDS SUPPORT   |
+| 120424672032   | Pass          | 782.16     | HIGH EFFICIENCY |
+| 120424672036   | Pass          | 1341.92    | HARD WORKER     |
+| 120424672037   | Pass          | 1274.66    | HARD WORKER     |
+| 120424672038   | Pass          | 1367.12    | HARD WORKER     |
+| 120424672039   | Fail          | 922.71     | NEEDS SUPPORT   |
+| 120424672040   | Fail          | 1061.94    | NEEDS SUPPORT   |
+| 120424672041   | Pass          | 1079.69    | HARD WORKER     |
+| 120424672042   | Pass          | 138        | HIGH EFFICIENCY |
+| 120424672044   | Fail          | 1420.85    | NEEDS SUPPORT   |
+| 120424672045   | Pass          | 1281.39    | HARD WORKER     |
+| 120424672046   | Pass          | 1061.78    | HARD WORKER     |
+| 120424672047   | Pass          | 1395.98    | HARD WORKER     |
+| 120424672048   | Fail          | 1588.55    | NEEDS SUPPORT   |
+| 120424672049   | Fail          | 1320.22    | NEEDS SUPPORT   |
+| 120424672051   | Pass          | 974.87     | HIGH EFFICIENCY |
+| 120424672054   | Fail          | 749.23     | NEEDS SUPPORT   |
+| 120424672055   | Fail          | 1160.18    | NEEDS SUPPORT   |
+| 120424672057   | Fail          | 1379.72    | NEEDS SUPPORT   |
+| 120424672059   | Fail          | 1660.06    | NEEDS SUPPORT   |
+
+
+Q9)If a student finished Question 1 (Q1) in under 15 seconds, they are 'Quick to Fall in Love.' If they took over 60 seconds, they are 'Hard to Get.' If they skipped (NULL), they are 'Focusing on their Career'.
+SELECT
+hall_ticket_no,
+"Q1",
+CASE
+WHEN "Q1" < 15 THEN 'Quick to Fall in Love'
+WHEN "Q1" > 60 THEN 'Hard to Get'
+WHEN "Q1" IS NULL THEN 'Focusing on their Career'
+ELSE 'Waiting for the Right One'
+END AS LOVE_LOGIC
+FROM
+qaday2
+| hall_ticket_no | Q1     | love_logic                |
+| -------------- | ------ | ------------------------- |
+| 120424672001   | 50.01  | Waiting for the Right One |
+| 120424672002   | 29.44  | Waiting for the Right One |
+| 120424672003   | 30.46  | Waiting for the Right One |
+| 120424672005   | 26.92  | Waiting for the Right One |
+| 120424672007   | 34.48  | Waiting for the Right One |
+| 120424672008   | 53.49  | Waiting for the Right One |
+| 120424672009   | 34.35  | Waiting for the Right One |
+| 120424672010   | 81.22  | Hard to Get               |
+| 120424672011   | 29.67  | Waiting for the Right One |
+| 120424672012   | 72.91  | Hard to Get               |
+| 120424672013   | 26.07  | Waiting for the Right One |
+| 120424672014   | 38.09  | Waiting for the Right One |
+| 120424672015   | 14.6   | Quick to Fall in Love     |
+| 120424672016   | 67.72  | Hard to Get               |
+| 120424672017   | 42.15  | Waiting for the Right One |
+| 120424672018   | 36.46  | Waiting for the Right One |
+| 120424672022   | 19.5   | Waiting for the Right One |
+| 120424672024   | 29.72  | Waiting for the Right One |
+| 120424672025   | 3.98   | Quick to Fall in Love     |
+| 120424672026   | 17.02  | Waiting for the Right One |
+| 120424672027   | 65.06  | Hard to Get               |
+| 120424672029   | 36.9   | Waiting for the Right One |
+| 120424672030   | 24.44  | Waiting for the Right One |
+| 120424672032   | 39.27  | Waiting for the Right One |
+| 120424672036   | 52.15  | Waiting for the Right One |
+| 120424672037   | 25.87  | Waiting for the Right One |
+| 120424672038   | 17.22  | Waiting for the Right One |
+| 120424672039   | 6.18   | Quick to Fall in Love     |
+| 120424672040   | null   | Focusing on their Career  |
+| 120424672041   | 43.21  | Waiting for the Right One |
+| 120424672042   | 39.33  | Waiting for the Right One |
+| 120424672044   | 28.43  | Waiting for the Right One |
+| 120424672045   | 60.25  | Hard to Get               |
+| 120424672046   | 32.62  | Waiting for the Right One |
+| 120424672047   | 99.05  | Hard to Get               |
+| 120424672048   | 105.39 | Hard to Get               |
+| 120424672049   | 43.31  | Waiting for the Right One |
+| 120424672051   | 27.44  | Waiting for the Right One |
+| 120424672054   | 29.4   | Waiting for the Right One |
+| 120424672055   | 14.76  | Quick to Fall in Love     |
+| 120424672057   | 45.99  | Waiting for the Right One |
+| 120424672059   | 69.13  | Hard to Get               |
+
+
+
+Q10)Get the full details from RSVP_New for the student who got the absolute maximum score on Day 2.(use subquery)
+SELECT
+T1.*
+FROM
+"RSVP_New" AS T1
+JOIN day_2_exam AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+WHERE total_score = (SELECT MAX(total_score) FROM day_2_exam)
+| hall_ticket_no | surname | full_name   | contact_no | email                  | college_name                | department_name                         | dob        | created_at                    |
+| -------------- | ------- | ----------- | ---------- | ---------------------- | --------------------------- | --------------------------------------- | ---------- | ----------------------------- |
+| 120424672032   | DUGAR   | NAINA DUGAR | 6305438350 | NAINADUGAR21@GMAIL.COM | St. Ann's College for Women | Master of Business Administration (MBA) | 2003-12-21 | 2026-01-05 05:15:26.177065+00 |
+
+
+
+Q11)Who registered for the class before 'AMENAH AHSAN'?(use subquery)
+SELECT
+full_name,
+created_at
+FROM
+"RSVP_New"
+WHERE created_at < (select created_at FROM "RSVP_New" WHERE full_name = 'AMENAH AHSAN' )
+| full_name         | created_at                    |
+| ----------------- | ----------------------------- |
+| KONDRU            | 2026-01-05 04:55:09.62256+00  |
+| KONDRU            | 2026-01-05 16:22:31.407641+00 |
+| SOBIA             | 2026-01-19 10:02:22.794323+00 |
+| MALEKA TARRANUM   | 2026-01-05 05:16:12.713548+00 |
+| PRAGNA            | 2026-01-19 10:02:38.560321+00 |
+| AMRITHA           | 2026-01-05 05:16:27.164089+00 |
+| NITYA SREE        | 2026-01-05 05:18:06.142462+00 |
+| NABA MUJAHID      | 2026-01-05 12:07:19.695282+00 |
+| MUSFIRA OMER      | 2026-01-05 05:15:52.587241+00 |
+| SRUTHI LALITHA    | 2026-01-05 05:16:32.211584+00 |
+| KARUNA MANORAMA   | 2026-01-05 05:15:14.896324+00 |
+| AISHWARYA         | 2026-01-05 05:21:50.482143+00 |
+| BARRAH SHAKEEB    | 2026-01-05 05:16:10.383569+00 |
+| ANISHA            | 2026-01-05 05:15:59.170151+00 |
+| NANDINI           | 2026-01-05 05:17:32.717859+00 |
+| SHAZIYA TASLEEM   | 2026-01-05 05:16:01.776319+00 |
+| SABA MOHAMMED ZIA | 2026-01-05 05:14:30.233399+00 |
+| RITHIKA           | 2026-01-19 10:03:26.601608+00 |
+| AKANKSHA          | 2026-01-05 05:20:27.239594+00 |
+| JUVERIYA JAHA     | 2026-01-05 05:38:32.298197+00 |
+| ADEEBA ARFANI     | 2026-01-05 05:16:08.519894+00 |
+| EVELYNSHINY       | 2026-01-05 05:15:57.577615+00 |
+| NAINA DUGAR       | 2026-01-05 05:15:26.177065+00 |
+| PRIYANKA  REDDDY  | 2026-01-05 05:18:55.916995+00 |
+| PRIYANKA          | 2026-01-05 05:15:27.511924+00 |
+| SHIFA             | 2026-01-19 10:03:35.504565+00 |
+| MAHIMA            | 2026-01-05 05:16:08.458876+00 |
+| FATIMA AMOODI     | 2026-01-05 05:15:20.100296+00 |
+| SAYEDA SANIYA     | 2026-01-05 05:16:47.114307+00 |
+| RAHMATH  UNNISA   | 2026-01-05 05:16:21.440516+00 |
+| SHIVA KUMARI      | 2026-01-05 05:18:44.249489+00 |
+| ASRA OSMAN        | 2026-01-19 10:03:13.294912+00 |
+| AYESHA JABEEN     | 2026-01-05 05:16:12.011433+00 |
+| PAVITHRA          | 2026-01-05 05:16:36.917201+00 |
+| SUBIYA KAUSER     | 2026-01-05 05:15:42.095346+00 |
+| RAHELA SULTANA    | 2026-01-05 05:15:19.889302+00 |
+| LAYEBA SIDDIQUE   | 2026-01-05 05:15:14.611255+00 |
+| SHIFA             | 2026-01-05 05:15:59.420361+00 |
+
+
+
+
+Q12)Show the details of students who are among the 5 fastest finishers of the Day 2 exam.
+SELECT
+T1.*
+FROM
+"RSVP_New" AS T1
+JOIN qaday2 AS T2
+ON T1.hall_ticket_no = T2.hall_ticket_no
+ORDER BY ("Total Time")
+LIMIT 5
+| hall_ticket_no | surname  | full_name       | contact_no | email                      | college_name                | department_name                         | dob        | created_at                    |
+| -------------- | -------- | --------------- | ---------- | -------------------------- | --------------------------- | --------------------------------------- | ---------- | ----------------------------- |
+| 120424672042   | AMOODI   | FATIMA AMOODI   | 8465978059 | FATIMAAMOODI007@GMAIL.COM  | St. Ann's College for Women | Master of Business Administration (MBA) | 2003-03-10 | 2026-01-05 05:15:20.100296+00 |
+| 120424672054   | AYESHA   | AYESHA JABEEN   | 7287993606 | AYESHAJABEEN4002@GMAIL.COM | St. Ann's College for Women | Master of Business Administration (MBA) | 2004-05-10 | 2026-01-05 05:16:12.011433+00 |
+| 120424672032   | DUGAR    | NAINA DUGAR     | 6305438350 | NAINADUGAR21@GMAIL.COM     | St. Ann's College for Women | Master of Business Administration (MBA) | 2003-12-21 | 2026-01-05 05:15:26.177065+00 |
+| 120424672022   | SHAIK    | SHAZIYA TASLEEM | 6305940287 | RAFATHBEGUM65@GMAIL.COM    | St. Ann's College for Women | Master of Business Administration (MBA) | 2004-02-19 | 2026-01-05 05:16:01.776319+00 |
+| 120424672017   | KATEGHAR | ANISHA          | 6305180843 | KATEGHARANISHA04@GMAIL.COM | St. Ann's College for Women | Master of Business Administration (MBA) | 2004-03-26 | 2026-01-05 05:15:59.170151+00 |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
